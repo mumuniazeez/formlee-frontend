@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Button } from "../ui/button";
 import {
@@ -11,17 +12,22 @@ import {
   Workflow,
 } from "lucide-react";
 import Image from "next/image";
+import { useAuthContext } from "@/contexts/AuthProvider";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar() {
+  const router = useRouter();
+  const { user } = useAuthContext();
+
   const navItems = [
-    { label: "Overview", href: "/overview", icon: LayoutDashboard },
+    { label: "Overview", href: "/dashboard", icon: LayoutDashboard },
     {
       label: "Forms",
-      href: "dashboard/forms",
+      href: "/dashboard/forms",
       icon: FileText,
       badge: "forms.length",
     },
-    { label: "Submissions", href: "/dashboard/settings", icon: Settings },
+    { label: "Submissions", href: "/dashboard/submissions", icon: Settings },
     { label: "Integrations", href: "/dashboard/integrations", icon: Workflow },
     { label: "Settings", href: "/dashboard/settings", icon: Settings },
   ];
@@ -35,7 +41,7 @@ export default function Sidebar() {
   ];
   return (
     <aside className="fixed top-0 left-0 z-50 w-64 h-screen">
-  <div className="bg-white border-r border-zinc-200 h-full flex flex-col justify-between">
+      <div className="bg-white border-r border-zinc-200 h-full flex flex-col justify-between">
         <div className="space-y-3">
           <div className="flex gap-3 items-center border-b p-3">
             <div className="w-8 h-8 rounded-lg bg-zinc-900 flex items-center justify-center text-white shadow-xs group-hover:bg-zinc-800 transition-colors">
@@ -68,13 +74,15 @@ export default function Sidebar() {
               <h5 className="text-xs text-black/60 mb-3">MENU</h5>
 
               <div className="space-y-3 flex flex-col">
-                {navItems.map((nI, idx) => (
+                {navItems.map((navigation, idx) => (
                   <Button
                     key={idx}
                     variant={"ghost"}
                     className={"justify-start text-black/60"}
+                    onClick={() => router.push(navigation.href)}
                   >
-                    <nI.icon /> <span className="text-sm">{nI.label}</span>
+                    <navigation.icon />{" "}
+                    <span className="text-sm">{navigation.label}</span>
                   </Button>
                 ))}
               </div>
@@ -85,13 +93,15 @@ export default function Sidebar() {
               <h5 className="text-xs text-black/60 mb-3"> RESOURCES</h5>
 
               <div className="space-y-3 flex flex-col">
-                {secondaryNavItems.map((nI, idx) => (
+                {secondaryNavItems.map((navigation, idx) => (
                   <Button
                     key={idx}
                     variant={"ghost"}
                     className={"justify-start text-black/60"}
+                    onClick={() => router.push(navigation.href)}
                   >
-                    <nI.icon /> <span className="text-sm">{nI.label}</span>
+                    <navigation.icon />{" "}
+                    <span className="text-sm">{navigation.label}</span>
                   </Button>
                 ))}
               </div>
@@ -108,7 +118,9 @@ export default function Sidebar() {
               className="rounded-full h-10"
             />
             <div>
-              <h6 className="tex-sm font-semibold">AzCodes</h6>
+              <h6 className="tex-sm font-semibold line-clamp-1">
+                {user!.firstName} {user!.lastName}
+              </h6>
               <p className="text-xs">PRO PLAN</p>
             </div>
           </div>
